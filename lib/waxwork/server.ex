@@ -1,5 +1,6 @@
 defmodule Waxwork.Server do
   use GenServer
+  require Logger
 
   alias :ets, as: Ets
 
@@ -9,18 +10,26 @@ defmodule Waxwork.Server do
   end
 
   def create_table(table) do
-    Ets.new(table, [:set, :protected, :named_table])
+    Ets.new(table, [:bag, :protected, :named_table])
   end
 
   def insert(table, instance) do
-    data = instance |> Map.values() |> List.to_tuple() |> Tuple.delete_at(0)
+    data =
+      instance
+      |> Map.values()
+      |> List.to_tuple()
+      |> Tuple.delete_at(0)
+      |> Tuple.insert_at(0, UUID.uuid4())
+
     Ets.insert_new(table, data)
   end
 
   def get_table(table) do
-    result =
-      Ets.tab2list(table)
-      |> Enum.map(&struct(table, &1))
+    Logger.debug(inspect(Ets.tab2list(table)))
+    result = Ets.tab2list(table)
+     |> Enum.map(&struct(table, Tuple.delete_at(0, &1)))
+
+    Logger.debug(inspect(result))
 
     {:ok, result}
   end

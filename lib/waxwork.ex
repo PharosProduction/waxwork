@@ -7,10 +7,11 @@ defmodule Waxwork do
 
   defmacro seed(table, do: expr) do
     quote do
-      unquote(table) |> Server.create_table()
+      table_name = unquote(table)
+      table_name |> Server.create_table()
 
       for instance <- unquote(expr) do
-        Server.insert_new(tabble, data)
+        Server.insert(table_name, instance)
       end
     end
   end
