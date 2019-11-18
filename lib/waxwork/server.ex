@@ -25,11 +25,11 @@ defmodule Waxwork.Server do
   end
 
   def get_table(table) do
-    Logger.debug(inspect(Ets.tab2list(table)))
-    result = Ets.tab2list(table)
-     |> Enum.map(&struct(table, Tuple.delete_at(0, &1)))
+    raw_result = table |> Ets.tab2list()
 
-    Logger.debug(inspect(result))
+    result =
+      raw_result
+      |> Enum.map(&assemble_struct(table, &1))
 
     {:ok, result}
   end
@@ -44,5 +44,11 @@ defmodule Waxwork.Server do
     |> Code.eval_file()
 
     {:ok, nil}
+  end
+
+  defp assemble_struct(table_name, item) do
+    keys = Map.keys(struct(table_name))
+    values = item |> Tuple.delete_at(0) |> Tuple.to_list()
+    struct(table_name, Enum.zip(keys, values))
   end
 end
