@@ -21,6 +21,8 @@ defmodule Waxwork.Server do
       |> Tuple.delete_at(0)
       |> Tuple.insert_at(0, UUID.uuid4())
 
+    Logger.debug("Seeding #{inspect(table)}: #{inspect(data)}")
+
     Ets.insert_new(table, data)
   end
 
@@ -34,15 +36,28 @@ defmodule Waxwork.Server do
     {:ok, result}
   end
 
+  def seed_file(file) do
+    Path.expand(file)
+
+    :ok
+  end
+
+  def seed_file(file, relative_to) when is_bitstring(relative_to) do
+    Path.expand(file, relative_to) |> Code.eval_file()
+
+    :ok
+  end
+
+  def seed_file(file, application_name) when is_atom(application_name) do
+    priv_dir = :code.priv_dir(application_name)
+    Path.expand(file, priv_dir) |> Code.eval_file()
+
+    :ok
+  end
+
   # Server
   @impl true
   def init(_opts) do
-    Path.expand(
-      Application.get_env(:waxwork, :seed_file),
-      :code.priv_dir(Application.get_env(:waxwork, :application_name))
-    )
-    |> Code.eval_file()
-
     {:ok, nil}
   end
 
