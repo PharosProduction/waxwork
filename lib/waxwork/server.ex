@@ -21,7 +21,7 @@ defmodule Waxwork.Server do
       |> Tuple.delete_at(0)
       |> Tuple.insert_at(0, UUID.uuid4())
 
-    Logger.debug("Seeding #{inspect(table)}: #{inspect(data)}")
+    Logger.debug("Seeding #{inspect(instance)}")
 
     Ets.insert_new(table, data)
   end
@@ -62,7 +62,7 @@ defmodule Waxwork.Server do
   end
 
   defp assemble_struct(table_name, item) do
-    keys = Map.keys(struct(table_name))
+    [_type  | keys] = table_name |> struct() |> Map.keys()
     values = item |> Tuple.delete_at(0) |> Tuple.to_list()
     struct(table_name, Enum.zip(keys, values))
   end
