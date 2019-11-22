@@ -21,7 +21,7 @@ defmodule Waxwork.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:db_manager, github: "Social-Media-Broadcaster/elixir-dbmanager"}
+      {:db_manager, github: "Social-Media-Broadcaster/elixir-dbmanager", runtime: false}
     ]
   end
 end
