@@ -34,3 +34,8 @@ tags
 **/*/.elixir_ls
 .elixir_ls
 
+# MacOS garbage
+.DS_Store
+
+# mnesia
+Mnesia.nonode@nohost

@@ -15,14 +15,13 @@ defmodule Waxwork.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {Waxwork.Application, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:uuid, "~> 1.1"}
+      {:db_manager, github: "Social-Media-Broadcaster/elixir-dbmanager"}
     ]
   end
 end
