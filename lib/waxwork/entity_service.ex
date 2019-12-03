@@ -6,6 +6,12 @@ defmodule Waxwork.EntityService do
   @behaviour EntityService
   @behaviour EntityService.Initializer
 
+  @spec init(list({String.t, String.t | atom})) :: :ok
+  def init(opts) when is_list(opts) do
+    opts |> Enum.each(&init/1)
+    :ok
+  end
+
   @spec init({String.t(), String.t}) :: :ok
   def init({file, folder}) when is_bitstring(folder) do
     Path.expand(file, folder) |> Code.eval_file()
